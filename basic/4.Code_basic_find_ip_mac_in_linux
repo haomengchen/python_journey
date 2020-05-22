@@ -1,0 +1,23 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
+#Code_basic-create-random-ip.py
+#本程序用于在linux系统的网卡上找出IP和MAC地址
+
+import os
+import re
+
+def findip():
+    IPfile = os.popen('ifconfig eth1').read()
+    InetIPtemp = re.findall('addr:(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s+', IPfile)
+    Masktemp = re.findall('Mask:(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\s+', IPfile)
+    return 'IP and Mask : ' + '.'.join(InetIPtemp[0]) + '/' + '.'.join(Masktemp[0])
+
+def findMAC():
+    IPfile = os.popen('ifconfig eth1').read()
+    MACtemp = re.findall('HWaddr\s(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})\s+\n', IPfile)
+    return 'MAC : ' + MACtemp[0]
+
+if __name__ == '__main__':
+    print (findip())
+    print (findMAC())
+
