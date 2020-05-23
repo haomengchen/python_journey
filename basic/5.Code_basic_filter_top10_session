@@ -1,0 +1,76 @@
+#!usr/bin/python
+# -*- coding=utf-8 -*-
+
+#Code_basic_find_top10_session
+#本程序通过输入防火墙的会话，来分析TOP10会话。
+
+import re
+from collections import Counter
+
+#对原始数据进行格式化
+def flow_format(origin_path):
+    data_strip = []
+    with open(origin_path, 'r') as f:
+        #data = f.read() #返回字符串,返回所有行
+        #data = f.readline() #返回字符串，只返回一行
+        data = f.readlines() #返回列表，每一行代表一个元素，返回所有行
+        print data
+
+        for line in data: #去掉首行和末行的‘\xef\xbb\xbf'问题
+            if '\xef\xbb\xbf' in line:
+                str1 = line.replace('\xef\xbb\xbf','')
+                data_strip.append(str1)
+            else:
+                data_strip.append(line)
+    print data_strip
+    return data_strip
+
+#数据处理方式1，输出的格式如：[{'src_ip': '117.151.68.121', 'dst_ip': '223.111.8.152', 'protocol': 'TCP', 'dst_port': '8080'},{}，{}，{}]
+def flow_process_type1():
+    result = []
+    origin_data = flow_format(origin_path)
+    for i in range(len(origin_data)):
+        flow_processing = {} #每次循环，将结果存为一个字典，作为元组result的一个元素
+        prot = origin_data[i].split()[0].strip()
+        src_ip = origin_data[i].split()[1].split('-->')[0].split(':')[0]
+        dst_ip = origin_data[i].split()[1].split('-->')[1].split(':')[0]
+        dst_port = origin_data[i].split()[1].split('-->')[1].split(':')[1]
+        flow_processing['protocol'] = prot
+        flow_processing['src_ip'] = src_ip
+        flow_processing['dst_ip'] = dst_ip
+        flow_processing['dst_port'] = dst_port
+        result.append(flow_processing)
+    #print result
+    return result
+
+#数据处理方式1，输出的内容目标服务(ip+port)的数量排序），形式如[{'dst_target':223.111.8.152:8080','rates':'100'},{},{},{}]
+def flow_process_type2():
+    result_dup = []
+    origin_data = flow_format(origin_path)
+    for i in range(len(origin_data)):
+        dst_target = origin_data[i].split()[1].split('-->')[1]
+        result_dup.append(dst_target) #全量目标ip和端口的组合，包含重复的内容
+
+    #result_dup_removal = list(set(result_dup)) #去重后的内容
+    #for j in result_dup: #元组内的重复元素计数，普通方法
+        #if result_rate.get(j) == None: #字典的get
+            #result_rate[j] = 1
+        #else:
+            #result_rate[j] += 1
+    result_rate = dict(Counter(result_dup))#元组内的重复元素计数，counter函数方法，推荐
+    result_rate_sorted = sorted(result_rate.items(), key=lambda x:x[1],reverse=True) #对数量进行排序，结果是[(),(),()]
+    return result_rate_sorted #字典形式
+
+if __name__ == '__main__':
+    origin_path = 'basic-re-plus-info.txt'
+    data_list = flow_process_type2()
+    #print data_list[0:10]
+    for i in data_list[:10]: #取前十个
+        print ('%-20s , Rate: %d' % (i[0],i[1]))
+
+
+
+
+
+
+
