@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
 #Code_basic-filter_intersection.py
-#本程序用于产生随机的C类的私网IP地址
+#本程序用于产生两个列表的交集
 
 def mix(a,b):
     same = []
