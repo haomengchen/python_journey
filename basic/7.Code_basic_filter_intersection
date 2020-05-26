@@ -1,0 +1,16 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
+#Code_basic-filter_intersection.py
+#本程序用于产生随机的C类的私网IP地址
+
+def mix(a,b):
+    same = []
+    for i in item1:
+        if i in item2:
+            same.append(i)
+    return same
+
+if __name__ == '__main__':
+    item1 = ['aaa', 111, (4, 5), 2.01]
+    item2 = ['bbb', 333, 111, 3.14, (4, 5)]
+    print mix(item1,item2)
