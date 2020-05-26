@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+# 本代码的主要功能: 实现防火墙会话的排行
+
+import re
+from collections import Counter
+
+def session_format(origin_path):
+    data_strip = []
+    with open(origin_path,'r') as f:
+        data = f.readlines()
+        #print data  #输入的格式如 ['xxxx','yyyy']
+
+        for line in data:  #line是列表中的元素，即字符串
+            if '\xef\xbb\xbf' in line:
+                str1 = line.replace('\xef\xbb\xbf','')
+                data_strip.append(str1)
+            else:
+                data_strip.append(line)
+    return data_strip
+
+def session_filter():
+    result = []
+    format_data = session_format(origin_path)
+    for i in range(len(format_data)):
+        src_ip = format_data[i].split()[1].split('-->')[0].split(':')[0]
+        dst_ip_port = format_data[i].split()[1].split('-->')[1]
+        src_dst_ip = src_ip + '-->' + dst_ip_port
+        result.append(src_dst_ip)
+    return result
+
+def session_arrange():#排序
+    result_rate = dict(Counter(session_filter()))
+    a = result_rate.items()
+    result_rate_sorted = sorted(a,key=lambda x:x[1],reverse=True)
+    for i in result_rate_sorted:
+        print i
+
+if __name__ == '__main__':
+    origin_path = 'fw_session.txt'
+    session_arrange()
