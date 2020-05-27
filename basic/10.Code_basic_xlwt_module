@@ -5,7 +5,7 @@
 
 import xlwt
 
-execl_path = 'F:\pycharmfiles\project2019\\venv\\1.Baisc-Scripts\\2020_basic\execlwrite.xls' #注意execl的后缀.xls
+execl_path = 'execlwrite.xls' #注意execl的后缀.xls
 
 workbook = xlwt.Workbook(encoding='utf-8') #创建一个workbook ,并设置编码
 #workbook = xlwt.Workbook(encoding = 'ascii')
