@@ -1,1 +1,1 @@
-This folder contents the network scripts.
+This advanced folder nothing to say.
