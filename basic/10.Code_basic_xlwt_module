@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+#Code_basic_xlrd_module.py
+#本程序用于整理xlwt模块常用功能
+
+import xlwt
+
+execl_path = 'F:\pycharmfiles\project2019\\venv\\1.Baisc-Scripts\\2020_basic\execlwrite.xls' #注意execl的后缀.xls
+
+workbook = xlwt.Workbook(encoding='utf-8') #创建一个workbook ,并设置编码
+#workbook = xlwt.Workbook(encoding = 'ascii')
+worksheet = workbook.add_sheet('example') # 创建一个worksheet
+
+worksheet.col(0).width = 20*256 #设置具体某一列单元格宽度 (默认宽度为2960，既10个字符0的宽度)
+# 设置列宽，一个中文等于两个英文等于两个字符，20为字符数，256为衡量单位
+
+font = xlwt.Font() #创建字体
+font.name = 'Arial'
+
+#font.name = 'Times New Roman'
+font.bold = True #加粗
+font.underline = True #加下划线
+font.italic = True # 加斜体
+font.colour_index = 2 #字体颜色 (2 = Red)
+font.height = 20*10  #(前20为字体，后20为衡量单位）
+
+
+pattern = xlwt.Pattern() #创建背景
+pattern.pattern = xlwt.Pattern.SOLID_PATTERN #设置单元格背景颜色
+pattern.pattern_fore_colour = 5 #设置具体的颜色
+#颜色代码：8 through 63. 0 = Black, 1 = White, 2 = Red, 3 = Green, 4 = Blue,
+# 5 = Yellow, 6 = Magenta, 7 = Cyan, 16 = Maroon, 17 = Dark Green, 18 = Dark Blue,
+# 19 = Dark Yellow , almost brown), 20 = Dark Magenta, 21 = Teal, 22 = Light Gray, 23 = Dark Gray
+
+borders = xlwt.Borders() #创建边框
+borders.left = xlwt.Borders.MEDIUM  # 添加左边框（粗实线）
+borders.right = xlwt.Borders.THIN  # 添加右边框(细实线）与设置为1效果相同
+borders.top = xlwt.Borders.MEDIUM_DASH_DOT_DOTTED  # 添加上边框(虚线）
+borders.bottom = 1 # 添加下边框（细线）
+# 细实线:1，小粗实线:2，细虚线:3，中细虚线:4，大粗实线:5，双线:6，细点虚线:7
+# 大粗虚线:8，细点划线:9，粗点划线:10，细双点划线:11，粗双点划线:12，斜点划线:13
+
+al = xlwt.Alignment() #创建单元格对齐方式
+al.horz = 0x02 #设置水平居中 (0x01:左对齐，0x03右对齐）
+al.vert = 0x01 #设置垂直居中 （0x00:上对齐，0x02 下对齐）
+#al.wrap = 1 #设置自动换行
+
+
+style = xlwt.XFStyle() #初始化样式对象
+style.font = font #将字体传递给样式对象
+style.pattern = pattern #将背景传递给样式对象
+style.borders = borders #将边框传递给样式对象
+style.alignment = al #将单元格对齐方式传递给样式对象
+
+worksheet.write(1,0, label = 'write_word1', style = style) # 写入excel, 参数对应 行, 列, 值 （带格式）
+
+#worksheet.write(0,1, 'write test2', style) #写入execl,不带格式
+worksheet.write(1,2, label = 'write_word2') #与上一行实现的效果一样
+
+workbook.save(execl_path) #保存，并记录保存的位置和execl名称
