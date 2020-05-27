@@ -1,0 +1,36 @@
+import xlrd
+
+from xlrd import *
+
+inputpath = 'execl_input.xlsx' #导入execl文件
+
+workbook = xlrd.open_workbook(inputpath) #打开execl表格
+print (workbook.sheet_names()) #获取所有sheet的名字
+Data_sheet = workbook.sheets()[0].name  #获取单个(第一个)sheet名字
+print (Data_sheet)
+
+
+Data_sheet_content = workbook.sheets()[0]#获取第一个sheet在内存中的位置(通过索引）
+print (Data_sheet_content)
+Data_sheet_content = workbook.sheet_by_name('requirement')#获取名称为requirement的sheet在内存中的位置(通过名称）
+print (Data_sheet_content)
+
+
+rowNum = Data_sheet_content.nrows #获取sheet行数(有效行数）
+colNum = Data_sheet_content.ncols #获取sheet列数
+print (rowNum)
+print (colNum)
+#print ('This sheet has %d rows.' % rowNum)
+#print ('This sheet has %d cols.' % colNum)
+
+
+rows = Data_sheet_content.row_values(0) #获取第一行的内容
+print (rows)
+cell_B1 = Data_sheet_content.row(0)[1].value #获取第一行第二列的值(行索引)
+print (cell_B1)
+cols = Data_sheet_content.col_values(1) #获取第二列的内容
+print (cols)
+cell_D2 = Data_sheet_content.col(3)[1].value #获取第四列第2行的值（列索引）
+print (cell_D2)
+cell_xy = Data_sheet_content.cell(1,1).value #获取第二行第二列的数值
+print (cell_xy)
