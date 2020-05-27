@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# _*_conding=utf-8
+# -*- coding=utf-8 -*-
 #Code_basic_pickle_module.py
 #用Pickle模块存储python原生对象。pickle提供了一个简单的持久化功能。可以将对象以文件的形式存放在磁盘上。
 
