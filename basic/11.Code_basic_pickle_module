@@ -1,0 +1,18 @@
+#!/usr/bin/python
+# _*_conding=utf-8
+#Code_basic_pickle_module.py
+#用Pickle模块存储python原生对象。pickle提供了一个简单的持久化功能。可以将对象以文件的形式存放在磁盘上。
+
+import pickle
+
+D = dict(zip(['migu', 'python', 'cisco'], [1, 2, 3]))
+
+def picklefile():
+    Fcreat = open('datafile.pkl','wb')
+    pickle.dump(D,Fcreat)
+    Fcreat.close()
+    Fopen = open('datafile.pkl','rb')
+    return pickle.load(Fopen)
+
+if __name__ == '__main__':
+    print (picklefile())
