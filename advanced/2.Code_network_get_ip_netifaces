@@ -1,0 +1,12 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
+#Code_network_get_ip_netifaces.py
+#本程序用于获取接口IP地址
+
+from netifaces import interfaces, ifaddresses, AF_INET
+
+def get_ip_address(ifname):
+    return ifaddresses(ifname)[AF_INET][0]['addr']
+
+if __name__ == "__main__":
+    print(get_ip_address('bond0'))
