@@ -1,0 +1,12 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
+#Code_network_get_mac_netifaces.py
+#本程序用于获取接口MAC地址
+
+import netifaces
+
+def get_mac_address(ifname):
+    return netifaces.ifaddresses(ifname)[netifaces.AF_LINK][0]['addr']
+
+if __name__ == '__main__':
+    print(get_mac_address("bond0"))
