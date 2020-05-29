@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+#Code_network_ping.py
+#本程序用于通过scapy模块来实现ping的功能
+
+from __future__ import print_function
+from scapy.all import *
+import time
+import struct
+import random
+import re
+from Code_network_get_mac_netifaces import get_ip_address
+
+5
+def ping_onetime(IP_dst,IP_ttl,ICMP_id,ICMP_seq):
+    Localip = get_ip_address('bond0')
+    request_timestamp = time.time()
+    payload_request_timestamp = struct.pack('>d',request_timestamp) #时间戳存为二进制,放在payload部分
+    ping_onetime_packet = sr1(IP(ttl=IP_ttl,dst=IP_dst,src=Localip)/ICMP(id=ICMP_id,seq=ICMP_seq)/payload_request_timestamp, timeout=1, verbose=False)
+    #构造request数据包，payload为时间戳。注意收到回复的内容中，dst和src信息对调
+    try: # 回包中的type=0,code=0, 回包id和请求的id相同才是同一次数据。然后提取其中信息:包的大小/回包的源地址/icmp_seq/ttl/间隔时间
+        if ping_onetime_packet.getlayer(ICMP).type == 0 and ping_onetime_packet.getlayer(ICMP).code == 0 and ping_onetime_packet.getlayer(ICMP).id == ICMP_id:
+            reply_src_ip = ping_onetime_packet.getlayer(IP).src
+            reply_seq = ping_onetime_packet.getlayer(ICMP).seq
+            reply_ttl = ping_onetime_packet.getlayer(IP).ttl
+            reply_length = len(ping_onetime_packet.getlayer(Raw).load) + len(ping_onetime_packet.getlayer(Padding).load) + 8
+            receive_time = time.time() #收到回包时的时间戳
+            reply_payload = ping_onetime_packet.getlayer(Raw).load
+            payload_reply_timestamp = struct.unpack('>d',reply_payload)
+            time_interval = (receive_time - payload_reply_timestamp[0]) * 1000  # 将秒转换为毫秒为单位
+            return reply_length, reply_src_ip, reply_seq, reply_ttl, time_interval
+    except Exception as keywords:
+        if re.match('.*None Type.*', str(keywords)):
+            return 'Error input'
+
+def ping_multitimes(IP_dst):
+    ICMP_id_random = random.randint(1,65535)
+    for i in range(1,6):
+        ping_result = ping_onetime(IP_dst,64,ICMP_id_random,i)
+        print('%d bytes from %s: icmp_seq=%d ttl=%d time=%4.2f ms' % (ping_result[0], ping_result[1], ping_result[2], ping_result[3], ping_result[4]))
+        time.sleep(1)
+    else:
+        print('.', end='')
+        time.sleep(1)
+
+if __name__ == '__main__':
+    IP_destination = raw_input('Plz input the Target IP: ')
+    ping_multitimes(IP_destination)
+
