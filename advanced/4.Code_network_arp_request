@@ -1,0 +1,35 @@
+#!usr/bin/env python
+# -*- coding=utf-8 -*-
+#Code_network_arp_request.py
+#本程序用于通过ARP协议来获知对端的MAC地址。
+
+from scapy.all import *
+
+from Code_network_get_ip_netifaces import get_ip_address
+from Code_network_get_mac_netifaces import get_mac_address
+
+
+def arp_request(targetip):
+    destip = str(targetip)
+    localmac = get_mac_address('bond0')
+    localip = get_ip_address('bond0')
+    ifname = 'bond0'
+
+    try:
+        result_raw = srp(
+            Ether(src=localmac, dst='FF:FF:FF:FF:FF:FF') / ARP(op=1, hwsrc=localmac, hwdst='00:00:00:00:00:00',
+                                                               psrc=localip, pdst=destip), iface=ifname, timeout=1,
+            verbose=False)
+        # srp: 发送二层数据包，并等待回应
+        # verbose = False ：不显示发送过程中，scapy的处理信息
+
+        result_list = result_raw[0].res
+
+        return 'Target-IP : %s \nTarget-MAC : %s' % (
+        result_list[0][1][1].fields['psrc'], result_list[0][1][1].fields['hwsrc'])
+    except Exception as e:
+        print (e)
+
+if __name__ == "__main__":
+    targetip = raw_input('Plz input Target IP:')
+    print (arp_request(targetip))
