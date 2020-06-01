@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+#Code_network_tcp_socket_client
+#本程序用于实现简单的tcp服务器端
+
+from socket import *
+
+ServerIP = '172.19.200.121'
+ServerPort = 28618
+
+SocketObject = socket(AF_INET, SOCK_STREAM)
+SocketObject.connect((ServerIP,ServerPort))
+
+while True:
+    Msg = raw_input('Plz in the Message(Using exit to interrupt):')
+    if Msg <> 'exit':
+        SocketObject.send(Msg.encode())
+        echo_Msg = SocketObject.recv(1024)
+        print (echo_Msg.decode())
+    else:
+        break
+SocketObject.close()
