@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding=utf-8 -*-
 #Code_network_tcp_socket_client.py
-#本程序用于实现简单的TCP客户端
+#本程序用于实现简单的TCP服务器端
 
 from socket import *
 
