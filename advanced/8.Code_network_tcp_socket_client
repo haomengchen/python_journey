@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+#Code_network_tcp_socket_client.py
+#本程序用于实现简单的TCP客户端
+
+from socket import *
+
+myIP = '192.168.200.121'
+myPort = 28618
+
+SocketObject = socket(AF_INET,SOCK_STREAM)
+SocketObject.bind((myIP, myPort))
+SocketObject.listen(5)
+
+while True:
+    connection, address = SocketObject.accept()
+    print (address, 'is connecting to Server')
+    while True:
+        data = connection.recv(1024)
+        print (data)
+        if not data:
+            break
+        connection.send(b'Echo == >' + data)
+    connection.close()
